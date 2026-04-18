@@ -11,6 +11,7 @@ const revealAllButton = document.getElementById('revealAll');
 const themeToggle = document.getElementById('themeToggle');
 const modeExamToggle = document.getElementById('modeExamToggle');
 const tooltip = document.getElementById('tooltip');
+const loadDemoButton = document.getElementById('loadDemoButton');
 const readerFooter = document.getElementById('readerFooter');
 const currentBlockLabel = document.getElementById('currentBlockLabel');
 const floatingRevealBlock = document.getElementById('floatingRevealBlock');
@@ -471,6 +472,24 @@ function setDropZoneState(active) {
 }
 
 dropZone.addEventListener('click', () => fileInput.click());
+
+async function loadDemo() {
+  try {
+    const demoUrl = 'https://raw.githubusercontent.com/csernam/GhostWord/master/Documents/constitucion.md';
+    const response = await fetch(demoUrl);
+    if (!response.ok) throw new Error('Demo not found');
+    const content = await response.text();
+    renderDocument(content, 'md');
+    state.fileName = 'constitucion.md (DEMO)';
+    updateControls();
+    saveState();
+  } catch (error) {
+    console.warn('No se pudo cargar el demo:', error);
+    alert('No se pudo cargar el demo. Verifica que tengas conexión a internet.');
+  }
+}
+
+loadDemoButton.addEventListener('click', loadDemo);
 
 async function handleFileSelection(file) {
   if (!file) return;

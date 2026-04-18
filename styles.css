@@ -91,6 +91,16 @@ input {
   border-color: var(--accent);
 }
 
+.pill-secondary {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pill-secondary:hover {
+  background: rgba(79, 70, 229, 0.18);
+}
+
 .panel.controls {
   display: grid;
   gap: 18px;
