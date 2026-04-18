@@ -475,7 +475,7 @@ dropZone.addEventListener('click', () => fileInput.click());
 
 async function loadDemo() {
   try {
-    const demoUrl = 'https://raw.githubusercontent.com/csernam/GhostWord/master/Documents/constitucion.md';
+    const demoUrl = 'https://raw.githubusercontent.com/csernam/GhostWord/master/constitucion.md';
     const response = await fetch(demoUrl);
     if (!response.ok) throw new Error('Demo not found');
     const content = await response.text();
