@@ -424,8 +424,7 @@ function cancelHoldToReveal() {
 function showTooltip(target, x, y) {
   const original = target.dataset.original || '';
   tooltip.textContent = original;
-  tooltip.style.left = `${x + 10}px`;
-  tooltip.style.top = `${y - 120}px`;
+  // Fixed centered position - ignoring pointer coordinates
   tooltip.classList.add('visible');
   tooltip.setAttribute('aria-hidden', 'false');
 }

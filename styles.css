@@ -188,7 +188,7 @@ input {
   bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   padding: 14px 18px;
   background: rgba(255, 255, 255, 0.92);
@@ -224,7 +224,7 @@ html.dark .reader-footer {
     padding: 10px 12px;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 8px;
     flex-wrap: wrap;
   }
@@ -235,7 +235,7 @@ html.dark .reader-footer {
   .footer-actions {
     display: flex;
     gap: 6px;
-    flex: 1;
+    flex: 0 1 auto;
     min-width: 0;
   }
   .footer-actions .pill {
@@ -335,15 +335,21 @@ html.dark .reader-footer {
   pointer-events: none;
   position: fixed;
   z-index: 20;
-  padding: 8px 12px;
-  border-radius: 999px;
+  padding: 16px 24px;
+  border-radius: 20px;
   background: var(--surface-strong);
   color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+  border: 2px solid var(--border);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
   opacity: 0;
   transition: opacity 0.15s ease, transform 0.15s ease;
   white-space: nowrap;
+  font-size: 1.1rem;
+  font-weight: 500;
+  max-width: 85vw;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 .tooltip.visible {
