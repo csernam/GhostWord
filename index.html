@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GhostWords · Entrenamiento de Memoria</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.12.313/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <strong>GhostWords</strong>
+        <span>Entrena memoria con ocultación progresiva</span>
+      </div>
+      <div class="toolbar">
+        <button id="themeToggle" class="pill">Modo oscuro</button>
+        <button id="modeExamToggle" class="pill">Modo examen</button>
+      </div>
+    </header>
+
+    <section class="panel controls">
+      <div class="file-controls">
+        <label class="button file-button">
+          Seleccionar archivo
+          <input id="fileInput" type="file" accept=".md,.txt,.pdf,.docx" hidden>
+        </label>
+        <div id="dropZone" class="drop-zone">
+          Toca aquí o arrastra un archivo para cargar
+        </div>
+        <div id="fileInfo" class="file-info">Ningún documento cargado</div>
+      </div>
+
+      <div class="sliders">
+        <label for="ghostSlider">Ocultación: <span id="ghostValue">40%</span></label>
+        <input id="ghostSlider" type="range" min="0" max="100" value="40">
+      </div>
+
+      <div class="actions">
+        <button id="revealBlock" class="pill">Bloque: revelar/ocultar</button>
+        <button id="revealParagraph" class="pill">Párrafo: vista breve</button>
+        <button id="revealAll" class="pill">Mostrar todo</button>
+      </div>
+      <div class="hint">Bloque revela/oculta permanentemente. Párrafo muestra el texto brevemente y regresa al modo ghost.</div>
+    </section>
+
+    <section id="reader" class="reader" tabindex="0">
+      <div class="empty-state">
+        Carga un archivo Markdown, texto, PDF o Word para comenzar.
+      </div>
+    </section>
+  </div>
+
+  <div id="readerFooter" class="reader-footer hidden">
+    <div class="footer-label">Bloque actual: <span id="currentBlockLabel">1</span></div>
+    <div class="footer-actions">
+      <button id="floatingRevealBlock" class="pill">Revelar bloque</button>
+      <button id="floatingRevealParagraph" class="pill">Vista rápida</button>
+      <button id="floatingRevealAll" class="pill">Mostrar todo</button>
+    </div>
+  </div>
+
+  <div id="tooltip" class="tooltip" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
