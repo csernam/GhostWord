@@ -244,11 +244,13 @@ function renderDocument(rawText, fileType) {
     wrapper.addEventListener('click', () => setCurrentBlock(index));
     wrapper.addEventListener('pointerdown', event => {
       if (event.target.closest('.ghost-word')) return;
+      event.preventDefault();
       startHoldToReveal(index, wrapper);
     });
     wrapper.addEventListener('pointerup', cancelHoldToReveal);
     wrapper.addEventListener('pointerleave', cancelHoldToReveal);
     wrapper.addEventListener('pointercancel', cancelHoldToReveal);
+    wrapper.addEventListener('contextmenu', event => event.preventDefault());
     if (block.type === 'list') {
       wrapper.appendChild(block.node);
       wrapper.dataset.type = 'list';
@@ -399,8 +401,9 @@ function handlePointerUp() {
   hideTooltip();
 }
 
-function startHoldToReveal(index, blockElement) {
+function startHoldToReveal(index, blockElement, event) {
   if (state.modeExam) return;
+  event.preventDefault();
   cancelHoldToReveal();
   holdTargetIndex = index;
   holdTimeout = window.setTimeout(() => {
@@ -422,7 +425,7 @@ function showTooltip(target, x, y) {
   const original = target.dataset.original || '';
   tooltip.textContent = original;
   tooltip.style.left = `${x + 10}px`;
-  tooltip.style.top = `${y - 48}px`;
+  tooltip.style.top = `${y - 120}px`;
   tooltip.classList.add('visible');
   tooltip.setAttribute('aria-hidden', 'false');
 }
