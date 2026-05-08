@@ -1,9 +1,9 @@
-const CACHE_VERSION = 'ghostwords-v5';
+const CACHE_VERSION = 'ghostwords-v6';
 const CACHE_ASSETS = [
   '/GhostWord/',
   '/GhostWord/index.html',
-  '/GhostWord/styles.css',
-  '/GhostWord/app.js',
+  '/GhostWord/styles.css?v=3',
+  '/GhostWord/app.js?v=3',
   '/GhostWord/manifest.json',
   'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.12.313/pdf.min.js',
