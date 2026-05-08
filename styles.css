@@ -324,16 +324,7 @@ html.dark .reader-footer {
   cursor: not-allowed;
 }
 
-.reader {
-  min-height: 420px;
-  padding: 30px;
-  border-radius: 28px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  overflow-anchor: none;
-  touch-action: pan-y;
-}
+/* NOTE: .reader definition is above (with padding-bottom) — duplicate removed */
 
 .tooltip {
   pointer-events: none;
