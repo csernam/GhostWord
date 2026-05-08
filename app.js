@@ -43,6 +43,12 @@ const currentBlockLabel = document.getElementById('currentBlockLabel');
 const floatingRevealBlock = document.getElementById('floatingRevealBlock');
 const floatingRevealParagraph = document.getElementById('floatingRevealParagraph');
 const floatingRevealAll = document.getElementById('floatingRevealAll');
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+if (scrollTopBtn) {
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 let holdTimeout = null;
 let holdTargetIndex = null;
 const tempRevealBlocks = new Set();

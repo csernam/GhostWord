@@ -45,7 +45,7 @@ input {
   max-width: 1080px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 250px;
+  padding-bottom: 120px;
 }
 
 .topbar {
@@ -99,6 +99,13 @@ input {
 
 .pill-secondary:hover {
   background: rgba(79, 70, 229, 0.18);
+}
+
+.pill-icon {
+  padding: 8px 12px;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .panel.controls {
@@ -173,7 +180,7 @@ input {
 .reader {
   min-height: 420px;
   padding: 30px;
-  padding-bottom: 200px;
+  padding-bottom: 90px;
   border-radius: 28px;
   background: var(--surface);
   box-shadow: var(--shadow);

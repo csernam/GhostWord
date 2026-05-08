@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
 
-test('Debug ghostwords logic', async ({ page }) => {
+test('Dump reader HTML', async ({ page }) => {
     await page.goto('/');
 
     const filePath = path.resolve('D:/Documents/GitHub/GhostWords/Documents/Test_document.pdf');
@@ -11,9 +11,9 @@ test('Debug ghostwords logic', async ({ page }) => {
     await expect(page.locator('#fileInfo')).toContainText('Test_document.pdf', { timeout: 10000 });
     await page.waitForSelector('.block');
 
-    const debugLines = await page.evaluate(() => window.__debugPdfLines);
-    const debugMarkdown = await page.evaluate(() => window.__debugPdfMarkdown);
+    const blocksCount = await page.locator('.block').count();
+    console.log('Total blocks rendered:', blocksCount);
 
-    fs.writeFileSync('pdf_debug_output.json', debugLines);
-    fs.writeFileSync('pdf_debug_markdown.txt', debugMarkdown);
+    const html = await page.locator('#reader').evaluate(el => el.innerHTML);
+    fs.writeFileSync('reader_html_dump.html', html);
 });
