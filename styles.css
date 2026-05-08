@@ -45,7 +45,7 @@ input {
   max-width: 1080px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 120px;
+  padding-bottom: 180px;
 }
 
 .topbar {
@@ -173,7 +173,7 @@ input {
 .reader {
   min-height: 420px;
   padding: 30px;
-  padding-bottom: 100px;
+  padding-bottom: 180px;
   border-radius: 28px;
   background: var(--surface);
   box-shadow: var(--shadow);
@@ -229,16 +229,19 @@ html.dark .reader-footer {
     gap: 8px;
     flex-wrap: wrap;
   }
+
   .footer-label {
     font-size: 0.85rem;
     flex-shrink: 0;
   }
+
   .footer-actions {
     display: flex;
     gap: 6px;
     flex: 0 1 auto;
     min-width: 0;
   }
+
   .footer-actions .pill {
     font-size: 0.85rem;
     padding: 8px 12px;
@@ -362,6 +365,7 @@ html.dark .reader-footer {
   .app-shell {
     padding: 16px;
   }
+
   .topbar,
   .panel.controls {
     gap: 14px;
