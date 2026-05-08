@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'ghostwords-v4';
+const CACHE_VERSION = 'ghostwords-v5';
 const CACHE_ASSETS = [
   '/GhostWord/',
   '/GhostWord/index.html',

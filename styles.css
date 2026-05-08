@@ -45,7 +45,7 @@ input {
   max-width: 1080px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 180px;
+  padding-bottom: 250px;
 }
 
 .topbar {
@@ -173,7 +173,7 @@ input {
 .reader {
   min-height: 420px;
   padding: 30px;
-  padding-bottom: 180px;
+  padding-bottom: 200px;
   border-radius: 28px;
   background: var(--surface);
   box-shadow: var(--shadow);
