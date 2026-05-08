@@ -486,12 +486,13 @@ async function parsePdfFile(buffer) {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     const loadingTask = pdfjsLib.getDocument({ data: buffer });
     const pdf = await loadingTask.promise;
+
     const allLines = [];
     for (let i = 1; i <= pdf.numPages; i += 1) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
 
-      let currentLine = { text: '', maxFontSize: 0 };
+      let currentLine = { text: '', maxFontSize: 0, yDiff: 0 };
       let lastY = null;
 
       for (const item of content.items) {
@@ -501,8 +502,9 @@ async function parsePdfFile(buffer) {
 
         if (lastY !== null && Math.abs(lastY - currentY) > 2) {
           const yDiff = Math.abs(lastY - currentY);
-          allLines.push({ ...currentLine, isParagraphBreak: yDiff > fontSize * 1.2 });
-          currentLine = { text: '', maxFontSize: 0 };
+          currentLine.yDiff = yDiff;
+          allLines.push(currentLine);
+          currentLine = { text: '', maxFontSize: 0, yDiff: 0 };
         } else if (lastY !== null && item.str.trim() !== '' && !currentLine.text.endsWith(' ') && !currentLine.text.endsWith('\n') && !item.str.startsWith(' ')) {
           currentLine.text += ' ';
         }
@@ -512,16 +514,24 @@ async function parsePdfFile(buffer) {
         lastY = currentY;
       }
       if (currentLine.text) {
-        allLines.push({ ...currentLine, isParagraphBreak: true });
+        allLines.push(currentLine);
       }
     }
 
+    // Determine base font size
     const sizeFreq = {};
+    const yFreq = {};
     for (const line of allLines) {
       if (line.text.trim() === '') continue;
-      const rounded = Math.round(line.maxFontSize * 10) / 10;
-      sizeFreq[rounded] = (sizeFreq[rounded] || 0) + line.text.length;
+      const roundedSize = Math.round(line.maxFontSize * 10) / 10;
+      sizeFreq[roundedSize] = (sizeFreq[roundedSize] || 0) + line.text.length;
+
+      if (line.yDiff > 2) {
+        const roundedY = Math.round(line.yDiff);
+        yFreq[roundedY] = (yFreq[roundedY] || 0) + 1;
+      }
     }
+
     let baseFontSize = 12;
     let maxWeight = 0;
     for (const [size, weight] of Object.entries(sizeFreq)) {
@@ -531,11 +541,21 @@ async function parsePdfFile(buffer) {
       }
     }
 
+    let normalLineHeight = baseFontSize * 1.2;
+    let maxYCount = 0;
+    for (const [y, count] of Object.entries(yFreq)) {
+      if (count > maxYCount) {
+        maxYCount = count;
+        normalLineHeight = parseFloat(y);
+      }
+    }
+
     let markdownText = '';
-    for (const line of allLines) {
+    for (let i = 0; i < allLines.length; i++) {
+      const line = allLines[i];
       const text = line.text.trim();
       if (!text) {
-        markdownText += line.isParagraphBreak ? '\n\n' : '\n';
+        markdownText += '\n\n';
         continue;
       }
 
@@ -548,7 +568,17 @@ async function parsePdfFile(buffer) {
         prefix = '### ';
       }
 
-      markdownText += prefix + line.text + (line.isParagraphBreak ? '\n\n' : '\n');
+      // It is a paragraph break if the gap is noticeably larger than normal line height
+      let isParagraphBreak = line.yDiff > (normalLineHeight * 1.35);
+
+      // If it ends without punctuation and isn't a huge gap or a heading, merge it (space instead of newline)
+      const endsWithPunctuation = /[.:;!?]$/.test(text.trim());
+      if (!isParagraphBreak && !endsWithPunctuation && prefix === '') {
+        // Just append a space
+        markdownText += prefix + line.text + ' ';
+      } else {
+        markdownText += prefix + line.text + (isParagraphBreak ? '\n\n' : '\n');
+      }
     }
 
     return { content: markdownText.trim(), type: 'md' };

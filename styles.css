@@ -173,6 +173,7 @@ input {
 .reader {
   min-height: 420px;
   padding: 30px;
+  padding-bottom: 100px;
   border-radius: 28px;
   background: var(--surface);
   box-shadow: var(--shadow);

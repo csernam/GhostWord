@@ -1,0 +1,26 @@
+{
+  "name": "ghostwords",
+  "version": "1.0.0",
+  "description": "**Entrena tu memoria con ocultación progresiva de palabras.**",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csernam/GhostWord.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csernam/GhostWord/issues"
+  },
+  "homepage": "https://github.com/csernam/GhostWord#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^2.16.105"
+  }
+}

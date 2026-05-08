@@ -1,0 +1,62 @@
+=== RAW ITEMS ===
+Str: 'Tema 2' | Y: 774.79 | X: 260.25
+Str: '' | Y: 743.04 | X: 28.45
+Str: '1. Valores superiores y principios inspiradores de' | Y: 743.04 | X: 28.45
+Str: '' | Y: 711.29 | X: 28.45
+Str: 'la Constitución' | Y: 711.29 | X: 28.45
+Str: '' | Y: 647.79 | X: 28.45
+Str: 'La Constitución establece en su artículo 1.1 que' | Y: 647.79 | X: 28.45
+Str: '' | Y: 616.04 | X: 28.45
+Str: 'España se constituye en un Estado social y' | Y: 616.04 | X: 28.45
+Str: '' | Y: 584.29 | X: 28.45
+Str: 'democrático de Derecho, que propugna como' | Y: 584.29 | X: 28.45
+Str: '' | Y: 552.54 | X: 28.45
+Str: 'valores superiores de su ordenamiento jurídico la' | Y: 552.54 | X: 28.45
+Str: '' | Y: 520.79 | X: 28.45
+Str: 'libertad, la justicia, la igualdad y el pluralismo' | Y: 520.79 | X: 28.45
+Str: '' | Y: 489.04 | X: 28.45
+Str: 'político. Estos son, por tanto, los fundamentos' | Y: 489.04 | X: 28.45
+Str: '' | Y: 457.29 | X: 28.45
+Str: 'básicos de nuestro ordenamiento jurídico.' | Y: 457.29 | X: 28.45
+Str: '' | Y: 393.79 | X: 28.45
+Str: 'El orden en que se citan los valores no es' | Y: 393.79 | X: 28.45
+Str: '' | Y: 362.04 | X: 28.45
+Str: 'aleatorio, sino que refleja las prioridades' | Y: 362.04 | X: 28.45
+Str: '' | Y: 330.29 | X: 28.45
+Str: 'constitucionales. Así, la libertad es el valor' | Y: 330.29 | X: 28.45
+Str: '' | Y: 298.54 | X: 28.45
+Str: 'supremo del ordenamiento jurídico español, y los' | Y: 298.54 | X: 28.45
+Str: '' | Y: 266.79 | X: 28.45
+Str: 'demás, instrumentos a su servicio.' | Y: 266.79 | X: 28.45
+Str: '' | Y: 203.29 | X: 28.45
+Str: 'Uno de los Padres de la Constitución, Gregorio' | Y: 203.29 | X: 28.45
+Str: '' | Y: 171.54 | X: 28.45
+Str: 'Peces-Barba, recalcaba que no son meras' | Y: 171.54 | X: 28.45
+Str: '' | Y: 139.79 | X: 28.45
+Str: 'declaraciones retóricas, sino auténticas normas' | Y: 139.79 | X: 28.45
+Str: '' | Y: 108.04 | X: 28.45
+Str: 'vinculantes que afectan a los Poderes del Estado' | Y: 108.04 | X: 28.45
+Str: '' | Y: 76.29 | X: 28.45
+Str: 'y pueden ser aplicadas directamente.' | Y: 76.29 | X: 28.45
+
+=== SORTED LOGIC ===
+Str: 'Tema 2' | Y: 774.79 | X: 260.25
+Str: '1. Valores superiores y principios inspiradores de' | Y: 743.04 | X: 28.45
+Str: 'la Constitución' | Y: 711.29 | X: 28.45
+Str: 'La Constitución establece en su artículo 1.1 que' | Y: 647.79 | X: 28.45
+Str: 'España se constituye en un Estado social y' | Y: 616.04 | X: 28.45
+Str: 'democrático de Derecho, que propugna como' | Y: 584.29 | X: 28.45
+Str: 'valores superiores de su ordenamiento jurídico la' | Y: 552.54 | X: 28.45
+Str: 'libertad, la justicia, la igualdad y el pluralismo' | Y: 520.79 | X: 28.45
+Str: 'político. Estos son, por tanto, los fundamentos' | Y: 489.04 | X: 28.45
+Str: 'básicos de nuestro ordenamiento jurídico.' | Y: 457.29 | X: 28.45
+Str: 'El orden en que se citan los valores no es' | Y: 393.79 | X: 28.45
+Str: 'aleatorio, sino que refleja las prioridades' | Y: 362.04 | X: 28.45
+Str: 'constitucionales. Así, la libertad es el valor' | Y: 330.29 | X: 28.45
+Str: 'supremo del ordenamiento jurídico español, y los' | Y: 298.54 | X: 28.45
+Str: 'demás, instrumentos a su servicio.' | Y: 266.79 | X: 28.45
+Str: 'Uno de los Padres de la Constitución, Gregorio' | Y: 203.29 | X: 28.45
+Str: 'Peces-Barba, recalcaba que no son meras' | Y: 171.54 | X: 28.45
+Str: 'declaraciones retóricas, sino auténticas normas' | Y: 139.79 | X: 28.45
+Str: 'vinculantes que afectan a los Poderes del Estado' | Y: 108.04 | X: 28.45
+Str: 'y pueden ser aplicadas directamente.' | Y: 76.29 | X: 28.45
