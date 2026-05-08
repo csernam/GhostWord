@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1e293b">
-  <meta name="description" content="Entrena tu memoria con ocultación progresiva de palabras. Carga documentos MD, TXT, PDF o DOCX y ajusta el nivel de dificultad.">
+  <meta name="description"
+    content="Entrena tu memoria con ocultación progresiva de palabras. Carga documentos MD, TXT, PDF o DOCX y ajusta el nivel de dificultad.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="GhostWords">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%231e293b' width='180' height='180' rx='40'/><text x='90' y='90' font-size='100' fill='white' text-anchor='middle' dominant-baseline='middle' font-weight='bold'>👻</text></svg>">
+  <link rel="apple-touch-icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%231e293b' width='180' height='180' rx='40'/><text x='90' y='90' font-size='100' fill='white' text-anchor='middle' dominant-baseline='middle' font-weight='bold'>👻</text></svg>">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%231e293b' width='180' height='180' rx='40'/><text x='90' y='90' font-size='100' fill='white' text-anchor='middle' dominant-baseline='middle' font-weight='bold'>👻</text></svg>">
   <title>GhostWords · Entrenamiento de Memoria</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.12.313/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
 </head>
+
 <body>
   <div class="app-shell">
     <header class="topbar">
@@ -52,7 +56,8 @@
         <button id="revealParagraph" class="pill">Párrafo: vista breve</button>
         <button id="revealAll" class="pill">Mostrar todo</button>
       </div>
-      <div class="hint">Bloque revela/oculta permanentemente. Párrafo muestra el texto brevemente y regresa al modo ghost.</div>
+      <div class="hint">Bloque revela/oculta permanentemente. Párrafo muestra el texto brevemente y regresa al modo
+        ghost.</div>
     </section>
 
     <section id="reader" class="reader" tabindex="0">
@@ -73,6 +78,34 @@
 
   <div id="tooltip" class="tooltip" aria-hidden="true"></div>
 
+  <script>
+    // Load external libraries dynamically
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = () => {
+          console.log('Script loaded:', src);
+          resolve();
+        };
+        script.onerror = () => {
+          console.error('Failed to load script:', src);
+          reject(new Error(`Failed to load ${src}`));
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    // Load libraries before app
+    Promise.all([
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js'),
+      loadScript('https://cdn.jsdelivr.net/npm/mammoth@1.5.1/mammoth.browser.min.js')
+    ]).catch(error => {
+      console.warn('Some libraries failed to load:', error);
+    });
+  </script>
+
   <script src="app.js"></script>
   <script>
     // Register service worker for PWA functionality
@@ -89,4 +122,5 @@
     }
   </script>
 </body>
+
 </html>

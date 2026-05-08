@@ -1,4 +1,30 @@
 const STORAGE_KEY = 'ghostwords-state';
+
+// Wait for external libraries to load
+function waitForLibrary(libName, maxAttempts = 50) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+    const checkInterval = setInterval(() => {
+      attempts++;
+      let lib = null;
+      if (libName === 'pdfjs') {
+        lib = window.pdfjsLib || (window.pdfjs && window.pdfjs.default) || window.PDFJS;
+      } else if (libName === 'mammoth') {
+        lib = window.mammoth;
+      } else if (libName === 'marked') {
+        lib = window.marked;
+      }
+
+      if (lib) {
+        clearInterval(checkInterval);
+        resolve(lib);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(checkInterval);
+        reject(new Error(`${libName} library did not load after ${maxAttempts * 100}ms`));
+      }
+    }, 100);
+  });
+}
 const reader = document.getElementById('reader');
 const fileInput = document.getElementById('fileInput');
 const dropZone = document.getElementById('dropZone');
@@ -23,7 +49,7 @@ const tempRevealBlocks = new Set();
 const tempRevealTimeouts = new Map();
 
 const STOPWORDS = new Set([
-  'de','la','el','que','y','a','en','un','ser','se','no','haber','por','con','para','como','estar','tener','le','lo','todo','pero','más','sus','mi','sin','sobre','este','ya','entre','cuando','muy','solo','sí','o','u','al','del','las','los','nos','ni','su','mientras','antes','después','durante','contra','desde','hasta','tras','versus','via','el','ella','ellos','ellas','esto','esta','estos','estas','ese','esa','esos','esas','otro','otra','otros','otras','cada','él','ella','ello','ellos','ellas','estos','estas','era','eran','fue','fueron','será','serán','está','están','estaba','estaban','era','eran','tiene','tienen','tengo','tienes','tenía','tenían','más','menos','sobre','entre','hasta','desde','durante','contra','sin','para','por','ante','tras','donde','quien','quienes','cual','cuales','cuál','cuáles','porque','porqué','como','cómo','qué','qué','cuando','cuándo','donde','dónde','quien','quién','quienes','cuanto','cuánto','cuantos','cuántos'
+  'de', 'la', 'el', 'que', 'y', 'a', 'en', 'un', 'ser', 'se', 'no', 'haber', 'por', 'con', 'para', 'como', 'estar', 'tener', 'le', 'lo', 'todo', 'pero', 'más', 'sus', 'mi', 'sin', 'sobre', 'este', 'ya', 'entre', 'cuando', 'muy', 'solo', 'sí', 'o', 'u', 'al', 'del', 'las', 'los', 'nos', 'ni', 'su', 'mientras', 'antes', 'después', 'durante', 'contra', 'desde', 'hasta', 'tras', 'versus', 'via', 'el', 'ella', 'ellos', 'ellas', 'esto', 'esta', 'estos', 'estas', 'ese', 'esa', 'esos', 'esas', 'otro', 'otra', 'otros', 'otras', 'cada', 'él', 'ella', 'ello', 'ellos', 'ellas', 'estos', 'estas', 'era', 'eran', 'fue', 'fueron', 'será', 'serán', 'está', 'están', 'estaba', 'estaban', 'era', 'eran', 'tiene', 'tienen', 'tengo', 'tienes', 'tenía', 'tenían', 'más', 'menos', 'sobre', 'entre', 'hasta', 'desde', 'durante', 'contra', 'sin', 'para', 'por', 'ante', 'tras', 'donde', 'quien', 'quienes', 'cual', 'cuales', 'cuál', 'cuáles', 'porque', 'porqué', 'como', 'cómo', 'qué', 'qué', 'cuando', 'cuándo', 'donde', 'dónde', 'quien', 'quién', 'quienes', 'cuanto', 'cuánto', 'cuantos', 'cuántos'
 ]);
 
 let state = {
@@ -245,7 +271,7 @@ function renderDocument(rawText, fileType) {
     wrapper.addEventListener('pointerdown', event => {
       if (event.target.closest('.ghost-word')) return;
       event.preventDefault();
-      startHoldToReveal(index, wrapper);
+      startHoldToReveal(index, wrapper, event);
     });
     wrapper.addEventListener('pointerup', cancelHoldToReveal);
     wrapper.addEventListener('pointerleave', cancelHoldToReveal);
@@ -435,38 +461,115 @@ function hideTooltip() {
 }
 
 async function readFile(file) {
-  const extension = file.name.split('.').pop().toLowerCase();
-  state.fileName = file.name;
-  if (extension === 'pdf') {
-    const arrayBuffer = await file.arrayBuffer();
-    return parsePdfFile(arrayBuffer);
+  try {
+    const extension = file.name.split('.').pop().toLowerCase();
+    state.fileName = file.name;
+    if (extension === 'pdf') {
+      const arrayBuffer = await file.arrayBuffer();
+      return parsePdfFile(arrayBuffer);
+    }
+    if (extension === 'docx') {
+      const arrayBuffer = await file.arrayBuffer();
+      return parseDocxFile(arrayBuffer);
+    }
+    const text = await file.text();
+    return { content: text, type: extension === 'md' ? 'md' : 'text' };
+  } catch (error) {
+    console.error('Error al leer archivo:', error);
+    throw new Error(`No se pudo procesar el archivo: ${error.message}`);
   }
-  if (extension === 'docx') {
-    const arrayBuffer = await file.arrayBuffer();
-    return parseDocxFile(arrayBuffer);
-  }
-  const text = await file.text();
-  return { content: text, type: extension === 'md' ? 'md' : 'text' };
 }
 
 async function parsePdfFile(buffer) {
-  if (window.pdfjsLib) {
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.12.313/pdf.worker.min.js';
+  try {
+    const pdfjsLib = await waitForLibrary('pdfjs');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    const loadingTask = pdfjsLib.getDocument({ data: buffer });
+    const pdf = await loadingTask.promise;
+    const allLines = [];
+    for (let i = 1; i <= pdf.numPages; i += 1) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+
+      let currentLine = { text: '', maxFontSize: 0 };
+      let lastY = null;
+
+      for (const item of content.items) {
+        if (!item.str && item.str !== '') continue;
+        const currentY = item.transform[5];
+        const fontSize = Math.abs(item.transform[3]) || 12;
+
+        if (lastY !== null && Math.abs(lastY - currentY) > 2) {
+          const yDiff = Math.abs(lastY - currentY);
+          allLines.push({ ...currentLine, isParagraphBreak: yDiff > fontSize * 1.2 });
+          currentLine = { text: '', maxFontSize: 0 };
+        } else if (lastY !== null && item.str.trim() !== '' && !currentLine.text.endsWith(' ') && !currentLine.text.endsWith('\n') && !item.str.startsWith(' ')) {
+          currentLine.text += ' ';
+        }
+
+        currentLine.text += item.str;
+        if (fontSize > currentLine.maxFontSize) currentLine.maxFontSize = fontSize;
+        lastY = currentY;
+      }
+      if (currentLine.text) {
+        allLines.push({ ...currentLine, isParagraphBreak: true });
+      }
+    }
+
+    const sizeFreq = {};
+    for (const line of allLines) {
+      if (line.text.trim() === '') continue;
+      const rounded = Math.round(line.maxFontSize * 10) / 10;
+      sizeFreq[rounded] = (sizeFreq[rounded] || 0) + line.text.length;
+    }
+    let baseFontSize = 12;
+    let maxWeight = 0;
+    for (const [size, weight] of Object.entries(sizeFreq)) {
+      if (weight > maxWeight) {
+        maxWeight = weight;
+        baseFontSize = parseFloat(size);
+      }
+    }
+
+    let markdownText = '';
+    for (const line of allLines) {
+      const text = line.text.trim();
+      if (!text) {
+        markdownText += line.isParagraphBreak ? '\n\n' : '\n';
+        continue;
+      }
+
+      let prefix = '';
+      if (line.maxFontSize >= baseFontSize * 1.4) {
+        prefix = '# ';
+      } else if (line.maxFontSize >= baseFontSize * 1.15) {
+        prefix = '## ';
+      } else if (line.maxFontSize >= baseFontSize * 1.05) {
+        prefix = '### ';
+      }
+
+      markdownText += prefix + line.text + (line.isParagraphBreak ? '\n\n' : '\n');
+    }
+
+    return { content: markdownText.trim(), type: 'md' };
+  } catch (error) {
+    console.error('Error al parsear PDF:', error);
+    throw new Error(`No se pudo procesar el PDF: ${error.message}`);
   }
-  const loadingTask = window.pdfjsLib.getDocument({ data: buffer });
-  const pdf = await loadingTask.promise;
-  let text = '';
-  for (let i = 1; i <= pdf.numPages; i += 1) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    text += content.items.map(item => item.str).join(' ') + '\n\n';
-  }
-  return { content: text.trim(), type: 'text' };
 }
 
 async function parseDocxFile(buffer) {
-  const result = await window.mammoth.extractRawText({ arrayBuffer: buffer });
-  return { content: result.value.trim(), type: 'text' };
+  try {
+    const mammoth = await waitForLibrary('mammoth');
+    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
+    if (!result.value || result.value.trim().length === 0) {
+      throw new Error('El documento DOCX está vacío o no tiene texto');
+    }
+    return { content: result.value.trim(), type: 'text' };
+  } catch (error) {
+    console.error('Error al parsear DOCX:', error);
+    throw new Error(`No se pudo procesar el DOCX: ${error.message}`);
+  }
 }
 
 function setDropZoneState(active) {
@@ -495,10 +598,23 @@ loadDemoButton.addEventListener('click', loadDemo);
 
 async function handleFileSelection(file) {
   if (!file) return;
-  const documentData = await readFile(file);
-  renderDocument(documentData.content, documentData.type);
-  updateControls();
-  saveState();
+  try {
+    fileInfo.textContent = `Cargando ${file.name}...`;
+    fileInput.disabled = true;
+    const documentData = await readFile(file);
+    if (!documentData.content || documentData.content.trim().length === 0) {
+      throw new Error('El archivo está vacío');
+    }
+    renderDocument(documentData.content, documentData.type);
+    updateControls();
+    saveState();
+  } catch (error) {
+    console.error('Error al cargar archivo:', error);
+    fileInfo.textContent = `Error: ${error.message}`;
+    alert(`No se pudo cargar el archivo: ${error.message}`);
+  } finally {
+    fileInput.disabled = false;
+  }
 }
 
 
@@ -526,7 +642,16 @@ dropZone.addEventListener('drop', event => {
   event.preventDefault();
   setDropZoneState(false);
   const file = event.dataTransfer.files?.[0];
-  if (file) handleFileSelection(file);
+  if (file) {
+    const validTypes = ['text/plain', 'text/markdown', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const extension = file.name.split('.').pop().toLowerCase();
+    const validExtensions = ['txt', 'md', 'pdf', 'docx'];
+    if (!validExtensions.includes(extension)) {
+      alert('Tipo de archivo no permitido. Usa: .md, .txt, .pdf o .docx');
+      return;
+    }
+    handleFileSelection(file);
+  }
 });
 
 ghostSlider.addEventListener('input', event => {
